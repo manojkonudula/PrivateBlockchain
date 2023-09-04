@@ -1,0 +1,21 @@
+{
+    "eventWaitTime": 600000,
+    "loglevel": "INFO",
+    "adminList": [
+        {
+            "org": "hospital",
+            "username": "admin",
+            "password": "adminpw"
+        },
+        {
+            "org": "pharmacy",
+            "username": "admin",
+            "password": "adminpw"
+        },
+        {
+            "org": "laboratory",
+            "username": "admin",
+            "password": "adminpw"
+        }
+    ]
+}

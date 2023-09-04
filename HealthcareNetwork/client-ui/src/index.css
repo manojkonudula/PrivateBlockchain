@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #011001;
+  color: azure;
+  overflow-y: overlay;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(10deg);
+  }
+}
+
+
+.input-control {
+  @apply bg-[#011001] border border-gray-300 outline-none rounded-lg py-1 ml-4 px-2 ;
+}

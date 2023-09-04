@@ -1,0 +1,63 @@
+{
+    "name": "test-network-pharmacy",
+    "version": "1.0.0",
+    "isLocal": true,
+    "client": {
+        "organization": "pharmacy",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "pharmacy": {
+            "mspid": "pharmacymsp",
+            "peers": [
+                "peer0.pharmacy",
+                "peer1.pharmacy"
+            ],
+            "certificateAuthorities": [
+                "ca.pharmacy"
+            ]
+        }
+    },
+    "peers": {
+        "peer0.pharmacy": {
+            "url": "grpcs://localhost:5555",
+            "tlsCACerts": {
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICFjCCAb2gAwIBAgIUOohCRu+ro+AwzTtS7H4zMFpH6+IwCgYIKoZIzj0EAwIw\naDELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK\nEwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMt\nY2Etc2VydmVyMB4XDTIzMDkwMTExMDYwMFoXDTM4MDgyODExMDYwMFowaDELMAkG\nA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQKEwtIeXBl\ncmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMtY2Etc2Vy\ndmVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAErZrJaRlIlv7XltIgvUp4NQ1d\nssctCISqKknBzlgT0QQx4ybp7a6cTPVH5cAo9AmNCXAkUVUgNolRjyMQdOT8ZqNF\nMEMwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYDVR0OBBYE\nFHimYZ+6Qx9gNXfXOaopgGeDB+y8MAoGCCqGSM49BAMCA0cAMEQCIAiF2T+SSiM1\niWEltRoBtRvLF1oWU/RZCvl5Cx0sOAymAiA1+Dqm/bGgj5QAfAD96GiJatGzqehX\n+Ymsf1lm5cWAjA==\n-----END CERTIFICATE-----\n"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.pharmacy",
+                "hostnameOverride": "peer0.pharmacy"
+            }
+        },
+        "peer1.pharmacy": {
+            "url": "grpcs://localhost:5565",
+            "tlsCACerts": {
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICFjCCAb2gAwIBAgIUOohCRu+ro+AwzTtS7H4zMFpH6+IwCgYIKoZIzj0EAwIw\naDELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK\nEwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMt\nY2Etc2VydmVyMB4XDTIzMDkwMTExMDYwMFoXDTM4MDgyODExMDYwMFowaDELMAkG\nA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQKEwtIeXBl\ncmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMtY2Etc2Vy\ndmVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAErZrJaRlIlv7XltIgvUp4NQ1d\nssctCISqKknBzlgT0QQx4ybp7a6cTPVH5cAo9AmNCXAkUVUgNolRjyMQdOT8ZqNF\nMEMwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYDVR0OBBYE\nFHimYZ+6Qx9gNXfXOaopgGeDB+y8MAoGCCqGSM49BAMCA0cAMEQCIAiF2T+SSiM1\niWEltRoBtRvLF1oWU/RZCvl5Cx0sOAymAiA1+Dqm/bGgj5QAfAD96GiJatGzqehX\n+Ymsf1lm5cWAjA==\n-----END CERTIFICATE-----\n"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.pharmacy",
+                "hostnameOverride": "peer1.pharmacy"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.pharmacy": {
+            "url": "https://localhost:5500",
+            "caName": "ca-pharmacy",
+            "tlsCACerts": {
+                "pem": [
+                    "-----BEGIN CERTIFICATE-----\nMIICFjCCAb2gAwIBAgIUOohCRu+ro+AwzTtS7H4zMFpH6+IwCgYIKoZIzj0EAwIw\naDELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK\nEwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMt\nY2Etc2VydmVyMB4XDTIzMDkwMTExMDYwMFoXDTM4MDgyODExMDYwMFowaDELMAkG\nA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQKEwtIeXBl\ncmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMtY2Etc2Vy\ndmVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAErZrJaRlIlv7XltIgvUp4NQ1d\nssctCISqKknBzlgT0QQx4ybp7a6cTPVH5cAo9AmNCXAkUVUgNolRjyMQdOT8ZqNF\nMEMwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYDVR0OBBYE\nFHimYZ+6Qx9gNXfXOaopgGeDB+y8MAoGCCqGSM49BAMCA0cAMEQCIAiF2T+SSiM1\niWEltRoBtRvLF1oWU/RZCvl5Cx0sOAymAiA1+Dqm/bGgj5QAfAD96GiJatGzqehX\n+Ymsf1lm5cWAjA==\n-----END CERTIFICATE-----\n"
+                ]
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}

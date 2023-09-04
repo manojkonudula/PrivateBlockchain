@@ -1,0 +1,47 @@
+[
+    {
+        "name": "patPvtCollection",
+        "policy": "OR('hospitalmsp.member', 'laboratorymsp.member' )",
+        "requiredPeerCount": 1,
+        "maxPeerCount": 1,
+        "blockToLive": 1000000,
+        "memberOnlyRead": true,
+        "memberOnlyWrite": true
+    },
+    {
+        "name": "hospitalmspPrivateCollection",
+        "policy": "OR('hospitalmsp.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 3,
+        "blockToLive":3,
+        "memberOnlyRead": true,
+        "memberOnlyWrite": false,
+        "endorsementPolicy": {
+          "signaturePolicy": "OR('hospitalmsp.member')"
+        }
+      },
+    {
+        "name": "pharmacymspPrivateCollection",
+        "policy": "OR('pharmacymsp.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 3,
+        "blockToLive":3,
+        "memberOnlyRead": true,
+        "memberOnlyWrite": false,
+        "endorsementPolicy": {
+          "signaturePolicy": "OR('pharmacymsp.member')"
+        }
+      },
+    {
+        "name": "laboratorymspPrivateCollection",
+        "policy": "OR('laboratorymsp.member')",
+        "requiredPeerCount": 0,
+        "maxPeerCount": 3,
+        "blockToLive":3,
+        "memberOnlyRead": true,
+        "memberOnlyWrite": false,
+        "endorsementPolicy": {
+          "signaturePolicy": "OR('laboratorymsp.member')"
+        }
+      }
+]

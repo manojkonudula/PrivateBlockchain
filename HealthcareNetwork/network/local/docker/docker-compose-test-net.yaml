@@ -1,0 +1,341 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: "2.4"
+
+volumes:
+  orderer1:
+  peer0.hospital:
+  peer1.hospital:
+  peer0.pharmacy:
+  peer1.pharmacy:
+  peer0.laboratory:
+  peer1.laboratory:
+
+networks:
+  mynetwork:
+    name: fabric_test
+
+services:
+  orderer1:
+    container_name: orderer1
+    image: hyperledger/fabric-orderer:latest
+    environment:
+      - FABRIC_LOGGING_SPEC=INFO
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_LISTENPORT=1100
+      - ORDERER_GENERAL_GENESISMETHOD=file
+      - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+      - ORDERER_GENERAL_LOCALMSPID=orderer1-MSP
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+      - ORDERER_OPERATIONS_LISTENADDRESS=0.0.0.0:11100
+      # enabled TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_KAFKA_TOPIC_REPLICATIONFACTOR=1
+      - ORDERER_KAFKA_VERBOSE=true
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: orderer
+    volumes:
+      - ../system-genesis-block/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+      - ../organizations/ordererOrganizations/orderer1/config.orderers/msp:/var/hyperledger/orderer/msp
+      - ../organizations/ordererOrganizations/orderer1/config.orderers/tls/:/var/hyperledger/orderer/tls
+      - orderer1:/var/hyperledger/production/orderer
+    ports:
+      - 1100:1100
+      - 11100:11100
+    networks:
+      - mynetwork
+
+  peer0.hospital:
+    container_name: peer0.hospital
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=mynetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.hospital
+      - CORE_PEER_ADDRESS=peer0.hospital:4444
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:4444
+      - CORE_PEER_CHAINCODEADDRESS=peer0.hospital:4445
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:4445
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.hospital:4454
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.hospital:4444
+      - CORE_PEER_LOCALMSPID=hospitalmsp
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:14444
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_PVTDATA_PUSHACKTIMEOUT=12s
+      - CORE_PEER_EVENTS_ADDRESS=0.0.0.0:4446
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../organizations/peerOrganizations/hospital/peers/peer0.hospital/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/hospital/peers/peer0.hospital/tls:/etc/hyperledger/fabric/tls
+      - peer0.hospital:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 4444:4444
+      - 14444:14444
+    networks:
+      - mynetwork
+
+  peer1.hospital:
+    container_name: peer1.hospital
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=mynetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer1.hospital
+      - CORE_PEER_ADDRESS=peer1.hospital:4454
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:4454
+      - CORE_PEER_CHAINCODEADDRESS=peer1.hospital:4455
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:4455
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.hospital:4444
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.hospital:4454
+      - CORE_PEER_LOCALMSPID=hospitalmsp
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:14454
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_PVTDATA_PUSHACKTIMEOUT=12s
+      - CORE_PEER_EVENTS_ADDRESS=0.0.0.0:4456
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../organizations/peerOrganizations/hospital/peers/peer1.hospital/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/hospital/peers/peer1.hospital/tls:/etc/hyperledger/fabric/tls
+      - peer1.hospital:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 4454:4454
+      - 14454:14454
+    networks:
+      - mynetwork
+
+  peer0.pharmacy:
+    container_name: peer0.pharmacy
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=mynetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.pharmacy
+      - CORE_PEER_ADDRESS=peer0.pharmacy:5555
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:5555
+      - CORE_PEER_CHAINCODEADDRESS=peer0.pharmacy:5556
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5556
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.pharmacy:5565
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.pharmacy:5555
+      - CORE_PEER_LOCALMSPID=pharmacymsp
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:15555
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_PVTDATA_PUSHACKTIMEOUT=12s
+      - CORE_PEER_EVENTS_ADDRESS=0.0.0.0:5557
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../organizations/peerOrganizations/pharmacy/peers/peer0.pharmacy/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/pharmacy/peers/peer0.pharmacy/tls:/etc/hyperledger/fabric/tls
+      - peer0.pharmacy:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 5555:5555
+      - 15555:15555
+    networks:
+      - mynetwork
+
+  peer1.pharmacy:
+    container_name: peer1.pharmacy
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=mynetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer1.pharmacy
+      - CORE_PEER_ADDRESS=peer1.pharmacy:5565
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:5565
+      - CORE_PEER_CHAINCODEADDRESS=peer1.pharmacy:5566
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:5566
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.pharmacy:5555
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.pharmacy:5565
+      - CORE_PEER_LOCALMSPID=pharmacymsp
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:15565
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_PVTDATA_PUSHACKTIMEOUT=12s
+      - CORE_PEER_EVENTS_ADDRESS=0.0.0.0:5567
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../organizations/peerOrganizations/pharmacy/peers/peer1.pharmacy/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/pharmacy/peers/peer1.pharmacy/tls:/etc/hyperledger/fabric/tls
+      - peer1.pharmacy:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 5565:5565
+      - 15565:15565
+    networks:
+      - mynetwork
+
+  peer0.laboratory:
+    container_name: peer0.laboratory
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=mynetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer0.laboratory
+      - CORE_PEER_ADDRESS=peer0.laboratory:6666
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:6666
+      - CORE_PEER_CHAINCODEADDRESS=peer0.laboratory:6667
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:6667
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.laboratory:6676
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.laboratory:6666
+      - CORE_PEER_LOCALMSPID=laboratorymsp
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:16666
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_PVTDATA_PUSHACKTIMEOUT=12s
+      - CORE_PEER_EVENTS_ADDRESS=0.0.0.0:6668
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../organizations/peerOrganizations/laboratory/peers/peer0.laboratory/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/laboratory/peers/peer0.laboratory/tls:/etc/hyperledger/fabric/tls
+      - peer0.laboratory:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 6666:6666
+      - 16666:16666
+    networks:
+      - mynetwork
+
+  peer1.laboratory:
+    container_name: peer1.laboratory
+    image: hyperledger/fabric-peer:latest
+    environment:
+      #Generic peer variables
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      # the following setting starts chaincode containers on the same
+      # bridge network as the peers
+      # https://docs.docker.com/compose/networking/
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=mynetwork
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variabes
+      - CORE_PEER_ID=peer1.laboratory
+      - CORE_PEER_ADDRESS=peer1.laboratory:6676
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:6676
+      - CORE_PEER_CHAINCODEADDRESS=peer1.laboratory:6677
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:6677
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.laboratory:6666
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.laboratory:6676
+      - CORE_PEER_LOCALMSPID=laboratorymsp
+      - CORE_OPERATIONS_LISTENADDRESS=0.0.0.0:16676
+      - CORE_PEER_GOSSIP_USELEADERELECTION=true
+      - CORE_PEER_GOSSIP_ORGLEADER=false
+      - CORE_PEER_GOSSIP_PVTDATA_PUSHACKTIMEOUT=12s
+      - CORE_PEER_EVENTS_ADDRESS=0.0.0.0:6678
+    volumes:
+      - /var/run/docker.sock:/host/var/run/docker.sock
+      - ../organizations/peerOrganizations/laboratory/peers/peer1.laboratory/msp:/etc/hyperledger/fabric/msp
+      - ../organizations/peerOrganizations/laboratory/peers/peer1.laboratory/tls:/etc/hyperledger/fabric/tls
+      - peer1.laboratory:/var/hyperledger/production
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: peer node start
+    ports:
+      - 6676:6676
+      - 16676:16676
+    networks:
+      - mynetwork
+
+  cli:
+    container_name: cli
+    image: hyperledger/fabric-tools:latest
+    tty: true
+    stdin_open: true
+    environment:
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
+    command: /bin/bash
+    volumes:
+      - /var/run/:/host/var/run/
+      - ../organizations:/opt/gopath/src/github.com/hyperledger/fabric/peer/organizations
+      - ../scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/
+    depends_on:
+      - peer0.hospital
+      - peer1.hospital
+      - peer0.pharmacy
+      - peer1.pharmacy
+      - peer0.laboratory
+      - peer1.laboratory
+    networks:
+      - mynetwork
+
+
+

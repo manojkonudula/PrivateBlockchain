@@ -1,0 +1,63 @@
+{
+    "name": "test-network-hospital",
+    "version": "1.0.0",
+    "isLocal": true,
+    "client": {
+        "organization": "hospital",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "hospital": {
+            "mspid": "hospitalmsp",
+            "peers": [
+                "peer0.hospital",
+                "peer1.hospital"
+            ],
+            "certificateAuthorities": [
+                "ca.hospital"
+            ]
+        }
+    },
+    "peers": {
+        "peer0.hospital": {
+            "url": "grpcs://localhost:4444",
+            "tlsCACerts": {
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICFjCCAb2gAwIBAgIUexhVp880gl1LuLFHmz7IFNBSEtYwCgYIKoZIzj0EAwIw\naDELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK\nEwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMt\nY2Etc2VydmVyMB4XDTIzMDkwMTExMDYwMFoXDTM4MDgyODExMDYwMFowaDELMAkG\nA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQKEwtIeXBl\ncmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMtY2Etc2Vy\ndmVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1ehbAjpEgYM+glgtHntmNupT\nfYa9fYye+CrV0lYt51CYwG6nYTeEzSZ+G6XWHgM2eTpiA2FUmkjHaYJItv0iNaNF\nMEMwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYDVR0OBBYE\nFDc2DAHF5zL9wXYPWpD5KmruyDyfMAoGCCqGSM49BAMCA0cAMEQCIFteUMPPDykg\nGZ2xSaKWviObMgYpiw+oCvqUikS72o/fAiAYRVnRbC6g2aFeeiERpUgQwLtTsV9k\nvuKe+fI8gH+rdw==\n-----END CERTIFICATE-----\n"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.hospital",
+                "hostnameOverride": "peer0.hospital"
+            }
+        },
+        "peer1.hospital": {
+            "url": "grpcs://localhost:4454",
+            "tlsCACerts": {
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICFjCCAb2gAwIBAgIUexhVp880gl1LuLFHmz7IFNBSEtYwCgYIKoZIzj0EAwIw\naDELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK\nEwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMt\nY2Etc2VydmVyMB4XDTIzMDkwMTExMDYwMFoXDTM4MDgyODExMDYwMFowaDELMAkG\nA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQKEwtIeXBl\ncmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMtY2Etc2Vy\ndmVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1ehbAjpEgYM+glgtHntmNupT\nfYa9fYye+CrV0lYt51CYwG6nYTeEzSZ+G6XWHgM2eTpiA2FUmkjHaYJItv0iNaNF\nMEMwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYDVR0OBBYE\nFDc2DAHF5zL9wXYPWpD5KmruyDyfMAoGCCqGSM49BAMCA0cAMEQCIFteUMPPDykg\nGZ2xSaKWviObMgYpiw+oCvqUikS72o/fAiAYRVnRbC6g2aFeeiERpUgQwLtTsV9k\nvuKe+fI8gH+rdw==\n-----END CERTIFICATE-----\n"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.hospital",
+                "hostnameOverride": "peer1.hospital"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.hospital": {
+            "url": "https://localhost:4400",
+            "caName": "ca-hospital",
+            "tlsCACerts": {
+                "pem": [
+                    "-----BEGIN CERTIFICATE-----\nMIICFjCCAb2gAwIBAgIUexhVp880gl1LuLFHmz7IFNBSEtYwCgYIKoZIzj0EAwIw\naDELMAkGA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQK\nEwtIeXBlcmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMt\nY2Etc2VydmVyMB4XDTIzMDkwMTExMDYwMFoXDTM4MDgyODExMDYwMFowaDELMAkG\nA1UEBhMCVVMxFzAVBgNVBAgTDk5vcnRoIENhcm9saW5hMRQwEgYDVQQKEwtIeXBl\ncmxlZGdlcjEPMA0GA1UECxMGRmFicmljMRkwFwYDVQQDExBmYWJyaWMtY2Etc2Vy\ndmVyMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE1ehbAjpEgYM+glgtHntmNupT\nfYa9fYye+CrV0lYt51CYwG6nYTeEzSZ+G6XWHgM2eTpiA2FUmkjHaYJItv0iNaNF\nMEMwDgYDVR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQEwHQYDVR0OBBYE\nFDc2DAHF5zL9wXYPWpD5KmruyDyfMAoGCCqGSM49BAMCA0cAMEQCIFteUMPPDykg\nGZ2xSaKWviObMgYpiw+oCvqUikS72o/fAiAYRVnRbC6g2aFeeiERpUgQwLtTsV9k\nvuKe+fI8gH+rdw==\n-----END CERTIFICATE-----\n"
+                ]
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}
